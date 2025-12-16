@@ -1,1 +1,5 @@
 
+2025-12-16 10:16:38 : warn: [Deepgram] API key missing
+2025-12-16 10:16:38 : info: [Frontend Service] Socket.IO server initialized
+2025-12-16 10:16:38 : info: Server started
+2025-12-16 10:16:38 : info: Socket.IO server ready for frontend connections

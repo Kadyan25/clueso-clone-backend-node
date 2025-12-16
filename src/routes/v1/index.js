@@ -5,6 +5,11 @@ const path = require('path');
 
 const { InfoController } = require('../../controllers');
 
+const recordingRoutes = require('./recording-routes');
+const frontendRoutes = require('./frontend-routes');
+const pythonRoutes = require('./python-routes');
+const sessionRoutes = require('./session-routes');
+
 const router = express.Router();
 
 // store audio in /uploads folder
@@ -33,6 +38,9 @@ router.post('/upload-audio', upload.single('audio'), (req, res) => {
 router.use("/recording", require("./recording-routes"));
 router.use("/frontend", require("./frontend-routes"));
 router.use("/python", require("./python-routes"));
+
+// sessions directly under /v1
+router.use('/', sessionRoutes);
 
 router.get('/info', InfoController.info);
 

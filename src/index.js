@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const cors = require('cors'); // Import the cors middleware
+const db = require('./models');
 
 const { ServerConfig, Logger } = require('./config');
 const apiRoutes = require('./routes');
@@ -40,8 +41,16 @@ app.use(express.urlencoded({ extended: true }));
 // All other API routes
 app.use('/api', apiRoutes);
 
-httpServer.listen(ServerConfig.PORT, () => {
-    console.log(`Successfully started server on PORT ${ServerConfig.PORT}`);
-    Logger.info("Server started");
-    Logger.info("Socket.IO server ready for frontend connections");
-});
+db.sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('DB synced');
+
+    httpServer.listen(ServerConfig.PORT, () => {
+      console.log(`Successfully started server on PORT ${ServerConfig.PORT}`);
+      Logger.info("Server started");
+      Logger.info("Socket.IO server ready for frontend connections");
+    });
+  })
+  .catch((err) => {
+    console.error('DB sync error:', err);
+  });

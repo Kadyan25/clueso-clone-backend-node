@@ -7,6 +7,11 @@ const router = express.Router();
 let sessions = [];
 let sessionCounter = 1;
 
+function findSessionById(id) {
+  return sessions.find((s) => s.id === id);
+}
+
+
 // POST /v1/sessions
 router.post('/sessions', (req, res) => {
   const { name } = req.body;
@@ -44,5 +49,40 @@ router.get('/sessions/:id', (req, res) => {
 
   return res.json(session);
 });
+
+// POST /v1/sessions/:id/process
+router.post('/sessions/:id/process', async (req, res) => {
+  const id = Number(req.params.id);
+  const session = findSessionById(id);
+
+  if (!session) {
+    return res.status(404).json({ message: 'Session not found' });
+  }
+
+  // mark as processing
+  session.status = 'PROCESSING';
+
+  try {
+    // TODO: later call Python AI here
+    // For now, fake AI result
+    const fakeScript = `This is a demo script for session "${session.name}".`;
+    const fakeAudioFileName = `demo_audio_${session.id}.mp3`;
+
+    // update session
+    session.status = 'READY';
+    session.scriptText = fakeScript;
+    session.audioFileName = fakeAudioFileName;
+
+    return res.json({
+      message: 'Session processed successfully (mock)',
+      session,
+    });
+  } catch (err) {
+    console.error(err);
+    session.status = 'FAILED';
+    return res.status(500).json({ message: 'Failed to process session' });
+  }
+});
+
 
 module.exports = router;

@@ -9,6 +9,7 @@ const recordingRoutes = require('./recording-routes');
 const frontendRoutes = require('./frontend-routes');
 const pythonRoutes = require('./python-routes');
 const sessionRoutes = require('./session-routes');
+const extensionRoutes = require('./extension-routes');
 
 const router = express.Router();
 
@@ -42,6 +43,7 @@ router.use("/python", require("./python-routes"));
 // sessions directly under /v1
 router.use('/', sessionRoutes);
 
+router.use('/', extensionRoutes); // now /api/v1/extension-events is live
 router.get('/info', InfoController.info);
 
 module.exports = router;

@@ -39,9 +39,13 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'Sessions',
   });
 
-  Session.associate = function (models) {
-    // no-op for now
-  };
+Session.associate = function (models) {
+  Session.hasMany(models.Feedback, {
+    foreignKey: 'sessionId',
+    as: 'feedbacks',
+  });
+};
+
 
   return Session;
 };

@@ -1,7 +1,7 @@
 // src/routes/v1/session-routes.js
 const express = require('express');
 const sessionRepository = require('../../repositories/session-repository');
-
+const feedbackRepository = require('../../repositories/feedback-repository');
 
 const router = express.Router();
 
@@ -102,6 +102,46 @@ router.post('/sessions/:id/process', async (req, res) => {
   }
 });
 
+// POST /v1/sessions/:id/feedback
+router.post('/sessions/:id/feedback', async (req, res) => {
+  try {
+    const sessionId = Number(req.params.id);
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ message: 'text is required' });
+    }
+
+    const session = await sessionRepository.findSessionById(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: 'Session not found' });
+    }
+
+    const feedback = await feedbackRepository.createFeedback(sessionId, text);
+    return res.status(201).json(feedback);
+  } catch (err) {
+    console.error('Error creating feedback:', err);
+    return res.status(500).json({ message: 'Failed to create feedback' });
+  }
+});
+
+// GET /v1/sessions/:id/feedback
+router.get('/sessions/:id/feedback', async (req, res) => {
+  try {
+    const sessionId = Number(req.params.id);
+
+    const session = await sessionRepository.findSessionById(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: 'Session not found' });
+    }
+
+    const feedbacks = await feedbackRepository.findFeedbacksBySessionId(sessionId);
+    return res.json(feedbacks);
+  } catch (err) {
+    console.error('Error fetching feedbacks:', err);
+    return res.status(500).json({ message: 'Failed to fetch feedbacks' });
+  }
+});
 
 
 module.exports = router;

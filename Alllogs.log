@@ -207,3 +207,35 @@
 2025-12-17 09:43:22 : info: [Frontend Service] Socket.IO server initialized
 2025-12-17 09:43:22 : info: Server started
 2025-12-17 09:43:22 : info: Socket.IO server ready for frontend connections
+2025-12-17 09:43:23 : warn: [Deepgram] API key missing
+2025-12-17 09:43:23 : info: [Frontend Service] Socket.IO server initialized
+2025-12-17 09:43:24 : info: Server started
+2025-12-17 09:43:24 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:09:37 : warn: [Deepgram] API key missing
+2025-12-18 07:09:37 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:09:38 : info: Server started
+2025-12-18 07:09:38 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:36:24 : warn: [Deepgram] API key missing
+2025-12-18 07:36:24 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:36:25 : info: Server started
+2025-12-18 07:36:25 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:40:01 : warn: [Deepgram] API key missing
+2025-12-18 07:40:01 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:40:02 : info: Server started
+2025-12-18 07:40:02 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:40:03 : warn: [Deepgram] API key missing
+2025-12-18 07:40:03 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:40:03 : info: Server started
+2025-12-18 07:40:03 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:40:06 : warn: [Deepgram] API key missing
+2025-12-18 07:40:06 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:40:07 : info: Server started
+2025-12-18 07:40:07 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:44:46 : warn: [Deepgram] API key missing
+2025-12-18 07:44:46 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:44:47 : info: Server started
+2025-12-18 07:44:47 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:45:02 : warn: [Deepgram] API key missing
+2025-12-18 07:45:02 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:45:02 : info: Server started
+2025-12-18 07:45:02 : info: Socket.IO server ready for frontend connections

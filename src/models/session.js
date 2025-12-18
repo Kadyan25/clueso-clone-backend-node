@@ -44,7 +44,13 @@ Session.associate = function (models) {
     foreignKey: 'sessionId',
     as: 'feedbacks',
   });
+
+  Session.hasMany(models.ExtensionEvent, {
+    foreignKey: 'sessionId',
+    as: 'extensionEvents',
+  });
 };
+
 
 
   return Session;

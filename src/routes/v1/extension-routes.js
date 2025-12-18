@@ -1,14 +1,11 @@
 // src/routes/v1/extension-routes.js
 const express = require('express');
-
 const router = express.Router();
+const db = require('../../models');
 
-// Temporary in-memory store just to prove the flow end-to-end.
-// Later you can move this to a Sequelize model.
-const extensionEvents = [];
 
 // POST /api/v1/extension-events
-router.post('/extension-events', (req, res) => {
+router.post('/extension-events', async (req, res) => {
   try {
     const { sessionId, url, steps } = req.body;
 
@@ -16,19 +13,21 @@ router.post('/extension-events', (req, res) => {
       return res.status(400).json({ message: 'sessionId and url are required' });
     }
 
-    const event = {
-      id: extensionEvents.length + 1,
+    // Ensure session exists
+    const session = await db.Session.findByPk(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: 'Session not found' });
+    }
+
+    const event = await db.ExtensionEvent.create({
       sessionId,
       url,
       steps: steps || [],
-      createdAt: new Date().toISOString()
-    };
-
-    extensionEvents.push(event);
+    });
 
     return res.status(201).json({
-      message: 'Extension event stored (in-memory)',
-      event
+      message: 'Extension event stored (db)',
+      event,
     });
   } catch (err) {
     console.error('Error handling extension event:', err);

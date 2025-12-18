@@ -35,4 +35,26 @@ router.post('/extension-events', async (req, res) => {
   }
 });
 
+// GET /api/v1/sessions/:id/extension-events
+router.get('/sessions/:id/extension-events', async (req, res) => {
+  try {
+    const sessionId = Number(req.params.id);
+
+    const session = await db.Session.findByPk(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: 'Session not found' });
+    }
+
+    const events = await db.ExtensionEvent.findAll({
+      where: { sessionId },
+      order: [['createdAt', 'DESC']],
+    });
+
+    return res.json(events);
+  } catch (err) {
+    console.error('Error fetching extension events:', err);
+    return res.status(500).json({ message: 'Failed to fetch extension events' });
+  }
+});
+
 module.exports = router;

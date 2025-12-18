@@ -239,3 +239,7 @@
 2025-12-18 07:45:02 : info: [Frontend Service] Socket.IO server initialized
 2025-12-18 07:45:02 : info: Server started
 2025-12-18 07:45:02 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:45:04 : warn: [Deepgram] API key missing
+2025-12-18 07:45:04 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:45:04 : info: Server started
+2025-12-18 07:45:04 : info: Socket.IO server ready for frontend connections

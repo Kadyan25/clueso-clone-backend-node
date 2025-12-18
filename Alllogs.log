@@ -243,3 +243,27 @@
 2025-12-18 07:45:04 : info: [Frontend Service] Socket.IO server initialized
 2025-12-18 07:45:04 : info: Server started
 2025-12-18 07:45:04 : info: Socket.IO server ready for frontend connections
+2025-12-18 07:59:35 : warn: [Deepgram] API key missing
+2025-12-18 07:59:35 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 07:59:36 : info: Server started
+2025-12-18 07:59:36 : info: Socket.IO server ready for frontend connections
+2025-12-18 13:47:01 : warn: [Deepgram] API key missing
+2025-12-18 13:47:01 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 13:47:03 : info: Server started
+2025-12-18 13:47:03 : info: Socket.IO server ready for frontend connections
+2025-12-18 13:49:29 : warn: [Deepgram] API key missing
+2025-12-18 13:49:29 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 13:49:30 : info: Server started
+2025-12-18 13:49:30 : info: Socket.IO server ready for frontend connections
+2025-12-18 13:50:04 : warn: [Deepgram] API key missing
+2025-12-18 13:50:04 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 13:50:05 : info: Server started
+2025-12-18 13:50:05 : info: Socket.IO server ready for frontend connections
+2025-12-18 13:51:07 : warn: [Deepgram] API key missing
+2025-12-18 13:51:07 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 13:51:08 : info: Server started
+2025-12-18 13:51:08 : info: Socket.IO server ready for frontend connections
+2025-12-18 13:51:17 : warn: [Deepgram] API key missing
+2025-12-18 13:51:17 : info: [Frontend Service] Socket.IO server initialized
+2025-12-18 13:51:18 : info: Server started
+2025-12-18 13:51:18 : info: Socket.IO server ready for frontend connections

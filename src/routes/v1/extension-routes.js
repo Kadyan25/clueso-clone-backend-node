@@ -1,11 +1,12 @@
 // src/routes/v1/extension-routes.js
 const express = require('express');
-const router = express.Router();
 const db = require('../../models');
+const { requireAuth } = require('../../middlewares');
 
+const router = express.Router();
 
 // POST /api/v1/extension-events
-router.post('/extension-events', async (req, res) => {
+router.post('/extension-events', requireAuth, async (req, res) => {
   try {
     const { sessionId, url, steps } = req.body;
 
@@ -13,9 +14,9 @@ router.post('/extension-events', async (req, res) => {
       return res.status(400).json({ message: 'sessionId and url are required' });
     }
 
-    // Ensure session exists
+    // Ensure session exists and belongs to current user
     const session = await db.Session.findByPk(sessionId);
-    if (!session) {
+    if (!session || session.userId !== req.user.id) {
       return res.status(404).json({ message: 'Session not found' });
     }
 
@@ -36,12 +37,13 @@ router.post('/extension-events', async (req, res) => {
 });
 
 // GET /api/v1/sessions/:id/extension-events
-router.get('/sessions/:id/extension-events', async (req, res) => {
+router.get('/sessions/:id/extension-events', requireAuth, async (req, res) => {
   try {
     const sessionId = Number(req.params.id);
 
+    // Ensure session exists and belongs to current user
     const session = await db.Session.findByPk(sessionId);
-    if (!session) {
+    if (!session || session.userId !== req.user.id) {
       return res.status(404).json({ message: 'Session not found' });
     }
 

@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
+      // NEW: owner of this session
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: true, // keep nullable so old rows still work
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

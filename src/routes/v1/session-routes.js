@@ -1,13 +1,16 @@
-// src/routes/v1/session-routes.js
 const express = require('express');
+const axios = require('axios'); // added for Python call
+
 const sessionRepository = require('../../repositories/session-repository');
 const feedbackRepository = require('../../repositories/feedback-repository');
+const { requireAuth } = require('../../middlewares');
 
 const router = express.Router();
 
+const PYTHON_AI_URL = process.env.PYTHON_AI_URL || 'http://localhost:8001';
 
 // POST /v1/sessions
-router.post('/sessions', async (req, res) => {
+router.post('/sessions', requireAuth, async (req, res) => {
   try {
     const { name } = req.body;
 
@@ -16,6 +19,7 @@ router.post('/sessions', async (req, res) => {
     }
 
     const newSession = await sessionRepository.createSession({
+      userId: req.user.id,
       name,
       status: 'PENDING',
       scriptText: null,
@@ -29,29 +33,25 @@ router.post('/sessions', async (req, res) => {
   }
 });
 
-
 // GET /v1/sessions
-// router.get('/sessions', (req, res) => {
-//   return res.json(sessions);
-// });
-router.get('/sessions', async (req, res) => {
+router.get('/sessions', requireAuth, async (req, res) => {
   try {
     const sessions = await sessionRepository.findAllSessions();
-    return res.json(sessions);
+    const userSessions = sessions.filter((s) => s.userId === req.user.id);
+    return res.json(userSessions);
   } catch (err) {
     console.error('Error fetching sessions:', err);
     return res.status(500).json({ error: 'Failed to fetch sessions' });
   }
 });
 
-
 // GET /v1/sessions/:id
-router.get('/sessions/:id', async (req, res) => {
+router.get('/sessions/:id', requireAuth, async (req, res) => {
   try {
     const id = Number(req.params.id);
     const session = await sessionRepository.findSessionById(id);
 
-    if (!session) {
+    if (!session || session.userId !== req.user.id) {
       return res.status(404).json({ message: 'Session not found' });
     }
 
@@ -62,48 +62,51 @@ router.get('/sessions/:id', async (req, res) => {
   }
 });
 
-
-
 // POST /v1/sessions/:id/process
-router.post('/sessions/:id/process', async (req, res) => {
+router.post('/sessions/:id/process', requireAuth, async (req, res) => {
   try {
     const id = Number(req.params.id);
     const session = await sessionRepository.findSessionById(id);
 
-    if (!session) {
+    if (!session || session.userId !== req.user.id) {
       return res.status(404).json({ message: 'Session not found' });
     }
 
     // mark as processing
     await sessionRepository.updateSession(id, { status: 'PROCESSING' });
 
-    // mock AI work
-    const fakeScript = `This is a demo script for session "${session.name}".`;
-    const fakeAudioFileName = `demo_audio_${session.id}.mp3`;
+    // call Python AI stub
+    const response = await axios.post(`${PYTHON_AI_URL}/simple-generate`, {
+      sessionId: session.id,
+      name: session.name,
+    });
+
+    const { script, processed_audio_filename } = response.data;
 
     const updatedSession = await sessionRepository.updateSession(id, {
       status: 'READY',
-      scriptText: fakeScript,
-      audioFileName: fakeAudioFileName,
+      scriptText: script,
+      audioFileName: processed_audio_filename,
     });
 
     return res.json({
-      message: 'Session processed successfully (mock)',
+      message: 'Session processed successfully with Python AI',
       session: updatedSession,
     });
   } catch (err) {
     console.error('Error processing session:', err);
-    // best-effort mark as FAILED if we can
     try {
       const id = Number(req.params.id);
       await sessionRepository.updateSession(id, { status: 'FAILED' });
     } catch (_) {}
-    return res.status(500).json({ message: 'Failed to process session' });
+    return res
+      .status(500)
+      .json({ message: 'Failed to process session with AI service' });
   }
 });
 
 // POST /v1/sessions/:id/feedback
-router.post('/sessions/:id/feedback', async (req, res) => {
+router.post('/sessions/:id/feedback', requireAuth, async (req, res) => {
   try {
     const sessionId = Number(req.params.id);
     const { text } = req.body;
@@ -113,7 +116,7 @@ router.post('/sessions/:id/feedback', async (req, res) => {
     }
 
     const session = await sessionRepository.findSessionById(sessionId);
-    if (!session) {
+    if (!session || session.userId !== req.user.id) {
       return res.status(404).json({ message: 'Session not found' });
     }
 
@@ -126,22 +129,23 @@ router.post('/sessions/:id/feedback', async (req, res) => {
 });
 
 // GET /v1/sessions/:id/feedback
-router.get('/sessions/:id/feedback', async (req, res) => {
+router.get('/sessions/:id/feedback', requireAuth, async (req, res) => {
   try {
     const sessionId = Number(req.params.id);
 
     const session = await sessionRepository.findSessionById(sessionId);
-    if (!session) {
+    if (!session || session.userId !== req.user.id) {
       return res.status(404).json({ message: 'Session not found' });
     }
 
-    const feedbacks = await feedbackRepository.findFeedbacksBySessionId(sessionId);
+    const feedbacks = await feedbackRepository.findFeedbacksBySessionId(
+      sessionId,
+    );
     return res.json(feedbacks);
   } catch (err) {
     console.error('Error fetching feedbacks:', err);
     return res.status(500).json({ message: 'Failed to fetch feedbacks' });
   }
 });
-
 
 module.exports = router;

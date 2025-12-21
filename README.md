@@ -386,11 +386,11 @@ POST http://localhost:4000/api/v1/auth/login
 
 ***
 
-## Limitations \& Future Work
+## Limitations & Future Work
 
-- AI behavior is **mocked** in `POST /sessions/:id/process`; a real Python FastAPI service (Gemini + TTS) is planned but not wired yet.[^2]
-- No pagination or advanced error handling; good enough for the assignment scope.
-- DB credentials in `config.json` are development-friendly, not production-ready.
-- CORS is open to all origins for ease of local development.
+- In the **reference architecture**, the Chrome extension streams audio/video and DOM events to the Node layer, which forwards them to a Python FastAPI service (with Deepgram + Gemini + ElevenLabs) that returns processed audio and instructions in a single pipeline. In this clone, the extension is intentionally simplified to send only structured DOM events (`sessionId`, `url`, `steps[]`), and AI processing is exposed as a separate `POST /api/v1/sessions/:id/process` step (“Process with AI” button in the UI) implemented as a **mock** inside the Node backend rather than via Python.
+- The Python AI service is kept as an **architectural boundary** for future work. Once environment issues around audio libraries (e.g. `pydub` / `pyaudioop`) are resolved, the same process endpoint can delegate to FastAPI instead of the local mock, without changing the frontend or extension.
+- There is no pagination, rate limiting, or advanced error handling; this is acceptable for the assignment scope but would need hardening for production.
+- Database credentials in `src/config/config.json` are development‑only and should be replaced with environment‑specific secrets in a real deployment.
 
 ***

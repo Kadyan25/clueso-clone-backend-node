@@ -1,35 +1,50 @@
 const express = require('express');
-const axios = require('axios'); // added for Python call
+const axios = require('axios'); // for Python call
 
 const sessionRepository = require('../../repositories/session-repository');
 const feedbackRepository = require('../../repositories/feedback-repository');
 const { requireAuth } = require('../../middlewares');
+const { ExtensionEvent } = require('../../models');
 
 const router = express.Router();
 
 const PYTHON_AI_URL = process.env.PYTHON_AI_URL || 'http://localhost:8001';
 
-// POST /v1/sessions
-router.post('/sessions', requireAuth, async (req, res) => {
+/**
+ * POST /v1/sessions/from-extension
+ * Called by the Chrome extension.
+ * Creates a new Session + ExtensionEvent in one shot.
+ */
+router.post('/sessions/from-extension', requireAuth, async (req, res) => {
   try {
-    const { name } = req.body;
+    const { url, steps } = req.body;
 
-    if (!name) {
-      return res.status(400).json({ message: 'name is required' });
+    if (!url) {
+      return res.status(400).json({ message: 'url is required' });
     }
 
-    const newSession = await sessionRepository.createSession({
+    // Create session with generated name/description
+    const newSession = await sessionRepository.createSessionFromExtension({
       userId: req.user.id,
-      name,
-      status: 'PENDING',
-      scriptText: null,
-      audioFileName: null,
+      url,
     });
 
-    return res.status(201).json(newSession);
+    // Create extension event
+    const event = await ExtensionEvent.create({
+      sessionId: newSession.id,
+      url,
+      steps: steps || [],
+    });
+
+    return res.status(201).json({
+      session: newSession,
+      event,
+    });
   } catch (err) {
-    console.error('Error creating session:', err);
-    return res.status(500).json({ message: 'Failed to create session' });
+    console.error('Error creating session from extension:', err);
+    return res
+      .status(500)
+      .json({ message: 'Failed to create session from extension' });
   }
 });
 

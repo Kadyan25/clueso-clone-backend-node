@@ -1,10 +1,28 @@
-// src/repositories/session-repository.js
 const db = require('../models');
 console.log('Models available in db:', Object.keys(db));
 
 class SessionRepository {
   async createSession(data) {
     return db.Session.create(data);
+  }
+
+  async createSessionFromExtension({ userId, url }) {
+    const timestamp = new Date().toLocaleString('en-US', {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    });
+
+    const name = `Recording – ${timestamp}`;
+    const description = `Recorded from ${url}`;
+
+    return db.Session.create({
+      userId,
+      name,
+      description,
+      status: 'PENDING',
+      scriptText: null,
+      audioFileName: null,
+    });
   }
 
   async findAllSessions() {
